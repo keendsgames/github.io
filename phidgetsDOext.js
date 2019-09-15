@@ -2,6 +2,7 @@
 		var phid;
 /*
 		var conn = new phidget22.Connection(8989, 'localhost');
+
                 var ch = new phidget22.DigitalOutput();
                 ch.onAttach = onAttach;
 		phid = null;
@@ -50,25 +51,25 @@
   	ext.installed = function() {
 	console.log('Phidgets Install Check');
 	if (phid !=null)
-    	return 1;
+    	return 'true';
 	else
-	return 0;
+	return 'false';
   	}
 
 	//set output high
 	ext.LEDStateOn = function() {
 		//phid.setState($('#LEDstate')[0].checked);
 		//phid.setState(true);   //turn led on
-		console.log(' LEDStateOn');
-		return 1;
+		console.log(' LEDState is On');
+		//return 1;
 	}
 
 	//set output low
-	ext.LEDstateOff = function() {
+	ext.LEDStateOff = function() {
 		//phid.setState($('#LEDstate')[0].checked);
         	//phid.setState(false);   //turn led off
-		console.log(' LEDStateOff');
-		return 0;
+		console.log(' LEDState is Off');
+		//return 0;
 	}
 /*
 	//get button state
@@ -80,10 +81,10 @@
     var descriptor = {
         blocks: [
 	  // Block type, block name, function name
-      ["b", "Phidget VINT installed?", "installed"],
-      [" ", "Set Led On", "LEDStateOn", "1"],
-      [" ", "Set Led Off", "LEDStateOff", "0"],
-      ["b", "button pressed?", "getButton", "fasle"],
+      ['b', 'Phidget VINT installed?', 'installed'],
+      [' ', 'Set Led On', 'LEDStateOn'],
+      [' ', 'Set Led Off', 'LEDStateOff'],
+      //['b', 'button pressed?', 'getButton', 'false'],
         ]
 
     };
