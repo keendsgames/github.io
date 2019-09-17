@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<title>DigitalOutput Example</title>
+<script src="jquery-2.1.4.min.js"></script>
+<script src="sha256.min.js"></script>
+<script src="phidget22.min.js"></script>
+</html>
+<script>
+	var phid;
+	phid = null;
+	$(document).ready(function() {
+		var conn = new phidget22.Connection(8989, 'localhost');
+		var ch = new phidget22.DigitalOutput();
+
+		ch.onAttach = onAttach;
+		
+
+		// If you want to open an output on a specific device, set the serial number:
+		//ch.setDeviceSerialNumber(495379);
+
+		// If you want to use the DigitalOutput mode of a port on your VINT hub, use these:
+		ch.setIsHubPortDevice(true);
+		ch.setHubPort(3);
+
+		ch.onDetach = function(ch) {
+			console.log('channel dettached');
+		}
+
+		conn.connect().then(function() {
+			console.log('connected');
+			ch.open().then(function(ch) {
+				console.log('channel open');
+			}).catch(function(err) {
+				console.log('failed to open the channel:' + err);
+			});
+
+		}).catch(function(err) {
+			alert('failed to connect to server:' + err);
+		});;
+	});
+			
+	function onAttach(ch) {
+		console.log(ch + ' attached');
+		phid = ch;
+		if (phid !=null)
+			console.log('Phidgets installed');
+		else
+			console.log('Phidgets not installed');
+		$('#ledField').show();
+	}
+
+	function LEDstateChange() {
+		phid.setState($('#LEDstate')[0].checked);
+		//phid.setState(true);   //turn led on
+		//phid.setState(false);   //turn led off
+	}
+
+	function onError(arg0, arg1) {
+
+		var d = new Date();
+		$('#errorTable').append('<tr><td> ' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + '.' + d.getMilliseconds() + '</td><td> 0x' + arg0.toString(16) + '</td><td>' + arg1 + '</td>');
+		$("#errorField").show();
+	}
+
+</script>
+
+<html>
+	<body>
+		<fieldset id="noAttach">
+			<label>No Phidget Attached</label>
+		</fieldset>
+		<fieldset id="Attach" hidden>
+			<table>
+				<tr>
+					<td><label>Attached:</label></td>
+					<td colspan='2'><label id='attachLabel'></label></td>
+				</tr>
+				<tr>
+					<td><label>Product:</label></td>
+					<td><label id='versionLabel'></label></td>
+				</tr>
+				<tr>
+					<td><label>Serial Number:</label></td>
+					<td><label id='serialLabel'></label></td>
+				</tr>
+				<tr>
+					<td><label>Hub Port:</label></td>
+					<td><label id='hubPortLabel'></label></td>
+				</tr>
+			</table>
+		</fieldset>
+		
+
+		<fieldset id="ledField" hidden>
+			<legend><label >LED Output</label></legend>
+			<table>
+				<tr>
+
+					<td style="text-align:center"><input type="checkbox" id='LEDstate' onChange="LEDstateChange()" value="0"></td>
+				</tr>
+			</table>
+			<br />
+		</fieldset>
+		<fieldset id="errorField" hidden>
+			<legend>Errors</legend>
+			<table id="errorTable">
+				<col width="100"><col width="100"><col width="400">
+				<thead><tr>
+					<th align='left'>Time</th>
+					<th align='center'>Error #</th>
+					<th align='center'>Desc</th>
+					<th><input type='submit' size='9' onclick="$('#errorTable tbody').remove();" value='Clear'></th>
+				</tr></thead>
+			</table>
+		</fieldset>
+	</body>
+</html>
